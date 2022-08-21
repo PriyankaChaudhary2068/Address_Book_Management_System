@@ -1,10 +1,15 @@
 package com.bridgelabz.addressBookSystem;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class AddressBook {
 	
@@ -14,19 +19,19 @@ public class AddressBook {
 
 	    	public static void main(String[] args) throws Exception {
 	    		System.out.println("Welcome to the Address Book Problem");
-	    		stringBuilder.append("First Name").append(",").append("Last Name").append(",").append("Address").append(",").append("City").append(",").append("State").append(",").append("Email Id")
-	    		.append(",").append("Zip").append(",").append("Mobile Number").append("\n");
-	    		AddressBook addressBookList = new AddressBook();
+	    		AddressBook contacts = new AddressBook();
 	    		boolean condition = true;
 
 	    		while (condition == true) {
-	    			System.out.println("1.AddContact & Write The File" + "\n"  );
+	    			System.out.println("1.AddContact & Write The File" + "\n" +"2.Reader of The JSON File" );
 	    			int option = scanner.nextInt();
 
 	    			switch (option) {
 	    			case 1:
-	    				addressBookList.addContactDetails();
+	    				contacts.addContactDetails();
 	    				break;
+	    			case 2:
+	    			    contacts.ReaderJSON();
 	    			default:
 	    				System.out.println("Invalid Input");
 	    			}
@@ -34,7 +39,7 @@ public class AddressBook {
 	    	}
 	    	
 	    	// Method to add contact
-	    	public void addContactDetails()  {
+	    	public void addContactDetails() throws IOException  {
 	    		Contact details = new Contact();
 	    		System.out.println("Enter a first name:");
 	    		details.setFirstName(scanner.next());
@@ -56,20 +61,49 @@ public class AddressBook {
 	    		contacts.add(details);
 	    		System.out.println(contacts);
 	    		System.out.println("successfully added new contacts");
+	    		JSONObject obj = new JSONObject();
 	    		
-	    		stringBuilder.append(details.getFirstName()).
-	    		append(",").append(details.getLastName()).append(",").append(details.getAddress()).append(",").append(details.getCity()).append(",").append(details.getState()).append(",").append(details.getEmail())
-	    		.append(",").append(details.getZip()).append(",").append(details.getPhoneNumber()).append("\n");
-	    		contacts.add(details);
-	    		System.out.println(contacts);
-	    		System.out.println("successfully added new contacts");
+	    	
+	    		// creating key value pairs
+	    		obj.put("First Name",details.getFirstName());
+	    		obj.put("Last Name",details.getLastName());
+	    		obj.put("Address",details.getAddress());
+	    		obj.put("City",details.getCity());
+	    		obj.put("State",details.getState());
+	    		obj.put("Zip",details.getZip());
+	    		obj.put("Phone Number",details.getPhoneNumber());
 	    		
-	    		//    ENTER THE PATH TO STORE THE .CSV FILE
-	    		try (FileWriter writer = new FileWriter("D:\\Java Learning\\addressbook.csv"))  {
-	    		    writer.write(stringBuilder.toString());
-	    		    System.out.println("CSV file created......");
-	    		}   catch (Exception e)  
-	    		{		
+	    		FileWriter file = new FileWriter("D:\\Java Learning\\addressbook.json");
+	    		file.write(obj.toJSONString());
+	    		file.flush();
+	    		System.out.println("File has been created......");
+	    }
+	    	public void ReaderJSON() throws FileNotFoundException  {
+	    		JSONParser jsonparser=new JSONParser();
+	    		//  location of the file 
+	    		FileReader reader=new FileReader("D:\\Java Learning\\addressbook.json");
+	    	    
+	    		try {
+	    		Object obj = jsonparser.parse(reader);
+	    		JSONObject empjsonobj=(JSONObject)obj;
+	    		String fname=(String) empjsonobj.get("First Name");
+	    		String lname=(String) empjsonobj.get("Last Name");
+	    		String address=(String) empjsonobj.get("Address");
+	    		String city=(String) empjsonobj.get("City");
+	    		String state=(String) empjsonobj.get("State");
+	    		String zip=(String) empjsonobj.get("Zip");
+	    		String phoneNumber=(String) empjsonobj.get("Phone Number");
+	    	    System.out.println("First Name :"+fname+" "+"Last Name :"+lname+" "+
+	    	    		"State :"+state+" "+"Address :"+address+" "+"Zip :"+zip+" "+"Phone Number :"+phoneNumber);
+	    	    
+	    	    
+	    		} catch (IOException e) {
+	    			e.printStackTrace();
+	    		} catch (ParseException e) {
+	    			
+	    			e.printStackTrace();
 	    		}
-	    }
-	    }
+	    	}
+	    	}
+	    		
+	    		
