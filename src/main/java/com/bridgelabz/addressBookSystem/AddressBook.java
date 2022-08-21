@@ -1,11 +1,7 @@
 package com.bridgelabz.addressBookSystem;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,30 +9,30 @@ import java.util.Scanner;
 public class AddressBook {
 	
 	        static Scanner scanner = new Scanner(System.in);
+	        static StringBuilder stringBuilder=new StringBuilder();
 	    	static ArrayList<Contact> contacts = new ArrayList<Contact>();
 
 	    	public static void main(String[] args) throws Exception {
 	    		System.out.println("Welcome to the Address Book Problem");
+	    		stringBuilder.append("First Name").append(",").append("Last Name").append(",").append("Address").append(",").append("City").append(",").append("State").append(",").append("Email Id")
+	    		.append(",").append("Zip").append(",").append("Mobile Number").append("\n");
 	    		AddressBook addressBookList = new AddressBook();
 	    		boolean condition = true;
 
 	    		while (condition == true) {
-	    			System.out.println("1.AddContact & Write The File" + "\n" + "2.Read The File" + "\n" );
+	    			System.out.println("1.AddContact & Write The File" + "\n"  );
 	    			int option = scanner.nextInt();
 
 	    			switch (option) {
 	    			case 1:
 	    				addressBookList.addContactDetails();
-	    				addressBookList.FileWriterToText();
 	    				break;
-	    			case 2:
-	    				addressBookList.FileReaderFromText();
-	    				break;	
 	    			default:
 	    				System.out.println("Invalid Input");
 	    			}
 	    		}
 	    	}
+	    	
 	    	// Method to add contact
 	    	public void addContactDetails()  {
 	    		Contact details = new Contact();
@@ -60,33 +56,20 @@ public class AddressBook {
 	    		contacts.add(details);
 	    		System.out.println(contacts);
 	    		System.out.println("successfully added new contacts");
-	    	}
-	    	public void FileWriterToText() throws Exception  {
-	    		FileOutputStream foutput = new FileOutputStream("file.text");
-	    		PrintStream print = new PrintStream(foutput);
-	    		print.println(contacts);
-	    		print.close();
-	    		foutput.close();
-	    	}
-	    	public void FileReaderFromText() throws IOException {
-	    		File infile= new File("file.text");
-	    		FileReader freader = null;
-	    		try {
-	    			freader = new FileReader(infile);
-	    			int ch;
-	    			while((ch=freader.read())!= -1) {
-	    				System.out.print((char)ch);
-	    			}
+	    		
+	    		stringBuilder.append(details.getFirstName()).
+	    		append(",").append(details.getLastName()).append(",").append(details.getAddress()).append(",").append(details.getCity()).append(",").append(details.getState()).append(",").append(details.getEmail())
+	    		.append(",").append(details.getZip()).append(",").append(details.getPhoneNumber()).append("\n");
+	    		contacts.add(details);
+	    		System.out.println(contacts);
+	    		System.out.println("successfully added new contacts");
+	    		
+	    		//    ENTER THE PATH TO STORE THE .CSV FILE
+	    		try (FileWriter writer = new FileWriter("D:\\Java Learning\\addressbook.csv"))  {
+	    		    writer.write(stringBuilder.toString());
+	    		    System.out.println("CSV file created......");
+	    		}   catch (Exception e)  
+	    		{		
 	    		}
-	    		catch (FileNotFoundException fnfe)
-	            {
-	                System.out.println("NO Such File Exists");
-	            }
-	            catch (IOException except)
-	            {
-	                System.out.println("IOException Occurred");
-	            }
-	    		  finally {freader.close(); 
-	    		}
-	    		}
-	    			}
+	    }
+	    }
